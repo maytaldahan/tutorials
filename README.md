@@ -13,6 +13,8 @@ This is a list of some archived Tapis tutorial repositories, ordered by recency:
 | Tutorial | Date | Description |
 |----------|------|-------------|
 | RECENT | | Recent tutorials are stored in repo |
+| [Tapis Tutorial for CIPacific 2026](https://github.com/tapis-project/tutorials/tree/main/2026-05-CIPP26) | 2026-05 | Tapis Tutorial for CIPacific |
+| [NAIRR User Meeting 2026](https://github.com/tapis-project/tutorials/tree/main/2026-03-NAIRR) | 2026-03 | 2026 NAIRR User Meeting tutorial |
 | [PEARC25](https://github.com/tapis-project/pearc25-tapis-tutorial) | 2025-07 | 2025 PEARC tutorial |
 | [TACCSTER24](https://github.com/tapis-project/taccster24-tapis-tutorial) | 2024-09 | TACCSTER24 tutorial |
 | [PEARC24](https://github.com/tapis-project/pearc24-tapis-tutorial) | 2024-07 | PEARC24 Tapis tutorial |
