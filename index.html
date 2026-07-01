@@ -1,0 +1,613 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>PEARC26 Tapis Tutorial | AI/ML, HPC, and the Tapis API Platform</title>
+<meta name="description" content="Hub of tutorials regarding Tapis — AI/ML, the national cyberinfrastructure ecosystem, and the Tapis API platform. PEARC 2026, July 27.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F7F4EC;
+    --paper-2:#EFEADD;
+    --ink-bg:#11161D;
+    --ink-bg-2:#1A212B;
+    --ink:#1B1F23;
+    --muted:#666B72;
+    --muted-light:#9AA0A8;
+    --line:#DDD5C3;
+    --line-dark:#2A323D;
+    --accent:#BF5700;
+    --accent-dark:#9C4600;
+    --accent-2:#1D7874;
+    --accent-2-light:#57A9A4;
+    --card:#FFFFFF;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:var(--body);
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.6;
+  }
+  h1,h2,h3,h4{font-family:var(--display); margin:0; line-height:1.15; letter-spacing:-0.01em;}
+  p{margin:0;}
+  a{color:inherit;}
+  .mono{font-family:var(--mono);}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 28px;}
+  img{max-width:100%; display:block;}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+
+  /* ---------- NAV ---------- */
+  header.site{
+    position:sticky; top:0; z-index:50;
+    background:rgba(17,22,29,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line-dark);
+  }
+  nav.wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    height:64px;
+  }
+  .brand{
+    font-family:var(--mono); font-size:15px; font-weight:600;
+    color:#F2EFE7; text-decoration:none; display:flex; align-items:baseline; gap:2px;
+  }
+  .brand .dim{color:var(--muted-light); font-weight:400;}
+  .brand .hi{color:var(--accent);}
+  .navlinks{display:flex; align-items:center; gap:28px;}
+  .navlinks a{
+    font-family:var(--mono); font-size:13px; letter-spacing:0.02em;
+    color:#C9CDD3; text-decoration:none; text-transform:lowercase;
+  }
+  .navlinks a:hover{color:#fff;}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--mono); font-size:13px; font-weight:500;
+    padding:9px 16px; border-radius:3px; text-decoration:none;
+    border:1px solid transparent; white-space:nowrap;
+  }
+  .btn-accent{background:var(--accent); color:#fff;}
+  .btn-accent:hover{background:var(--accent-dark);}
+  .btn-outline-dark{border-color:#3A4351; color:#EDEAE1;}
+  .btn-outline-dark:hover{border-color:#EDEAE1;}
+  .navtoggle{display:none; background:none; border:none; color:#F2EFE7; font-size:22px; cursor:pointer;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:
+      radial-gradient(1100px 480px at 85% -10%, rgba(191,87,0,0.25), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(29,120,116,0.28), transparent 60%),
+      var(--ink-bg);
+    color:#F2EFE7;
+    padding:76px 0 0;
+    overflow:hidden;
+  }
+  .hero-grid{
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:56px; align-items:center;
+    padding-bottom:56px;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--mono); font-size:12.5px; letter-spacing:0.06em;
+    color:var(--accent-2-light); text-transform:uppercase;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{content:"●"; color:var(--accent); font-size:9px;}
+  .hero h1{
+    font-size:clamp(34px, 4.6vw, 54px);
+    font-weight:700;
+    color:#FBF9F4;
+  }
+  .hero h1 em{
+    font-style:normal; color:var(--accent);
+  }
+  .hero p.lede{
+    margin-top:20px; font-size:17px; color:#C9CDD3; max-width:52ch;
+  }
+  .hero-ctas{margin-top:32px; display:flex; gap:14px; flex-wrap:wrap;}
+  .hero-orgs{
+    margin-top:44px; padding-top:22px; border-top:1px solid var(--line-dark);
+    display:flex; gap:28px; flex-wrap:wrap;
+    font-family:var(--mono); font-size:12px; color:var(--muted-light); letter-spacing:0.03em;
+  }
+
+  /* API card signature element */
+  .api-card{
+    background:var(--ink-bg-2);
+    border:1px solid var(--line-dark);
+    border-radius:8px;
+    overflow:hidden;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.55);
+  }
+  .api-card .bar{
+    display:flex; align-items:center; gap:8px;
+    padding:11px 16px; border-bottom:1px solid var(--line-dark);
+    background:#161D25;
+  }
+  .api-card .dot{width:9px; height:9px; border-radius:50%; background:#3A4351;}
+  .api-card .bar-label{
+    margin-left:6px; font-family:var(--mono); font-size:11.5px; color:var(--muted-light);
+  }
+  .api-card .body{padding:20px 20px 22px; font-family:var(--mono); font-size:13px;}
+  .api-card .line{margin-bottom:6px; white-space:pre;}
+  .api-card .method{color:var(--accent); font-weight:600;}
+  .api-card .path{color:#F2EFE7;}
+  .api-card .status{color:var(--accent-2-light);}
+  .api-card pre{
+    margin:12px 0 0; padding:14px; background:#0F141A; border-radius:6px;
+    color:#CBD3DA; font-size:12.5px; overflow-x:auto; border:1px solid var(--line-dark);
+  }
+  .api-card .k{color:#8FB8C7;}
+  .api-card .s{color:#D0A56C;}
+  .api-card .n{color:var(--accent-2-light);}
+
+  /* stat strip */
+  .statstrip{
+    border-top:1px solid var(--line-dark);
+    background:#0E1319;
+  }
+  .statstrip .wrap{
+    display:grid; grid-template-columns:repeat(4,1fr);
+  }
+  .stat{
+    padding:22px 24px; border-right:1px solid var(--line-dark);
+  }
+  .stat:last-child{border-right:none;}
+  .stat .k{
+    font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.08em;
+    color:var(--muted-light); margin-bottom:6px;
+  }
+  .stat .v{font-family:var(--display); font-size:16px; color:#F2EFE7; font-weight:600;}
+
+  /* ---------- SECTION shared ---------- */
+  section{padding:80px 0;}
+  .section-head{max-width:640px; margin-bottom:44px;}
+  .section-tag{
+    font-family:var(--mono); font-size:12.5px; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--accent-2); margin-bottom:12px; display:block;
+  }
+  .section-head h2{font-size:clamp(26px,3vw,34px); color:var(--ink);}
+  .section-head p{margin-top:14px; color:var(--muted); font-size:16px;}
+
+  /* overview */
+  .overview{background:var(--paper);}
+  .overview-body{
+    display:grid; grid-template-columns:1fr 1fr; gap:48px;
+  }
+  .overview-body p{color:var(--muted); font-size:16px; margin-bottom:16px;}
+  .overview-body p:last-child{margin-bottom:0;}
+  .overview-body strong{color:var(--ink); font-weight:600;}
+  .funding-note{
+    margin-top:20px; padding:14px 16px; background:var(--paper-2);
+    border-left:3px solid var(--accent); font-size:14px; color:var(--muted);
+    border-radius:0 4px 4px 0;
+  }
+
+  /* tracks / format */
+  .tracks{background:var(--paper-2);}
+  .track-list{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+  .track{
+    background:var(--card); border:1px solid var(--line); border-radius:10px;
+    padding:28px 24px; position:relative;
+  }
+  .track .num{
+    font-family:var(--mono); font-size:13px; color:var(--accent);
+    margin-bottom:16px; display:block;
+  }
+  .track h3{font-size:19px; margin-bottom:10px;}
+  .track p{color:var(--muted); font-size:14.5px; margin-bottom:16px;}
+  .track ul{margin:0; padding:0; list-style:none;}
+  .track li{margin-bottom:8px;}
+  .track a{
+    font-size:13.5px; text-decoration:none; color:var(--ink);
+    display:flex; gap:8px; align-items:baseline;
+    border-bottom:1px solid transparent;
+  }
+  .track a:hover{border-bottom-color:var(--accent); color:var(--accent-dark);}
+  .track a .tag{
+    font-family:var(--mono); font-size:10.5px; color:#fff; background:var(--accent-2);
+    padding:2px 6px; border-radius:3px; flex-shrink:0; text-transform:uppercase;
+  }
+  .track a .tag.lec{background:#5B6470;}
+
+  /* agenda */
+  .agenda{background:var(--paper);}
+  .agenda-table-wrap{
+    border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--card);
+  }
+  table.agenda-table{width:100%; border-collapse:collapse; font-size:14.5px;}
+  table.agenda-table thead th{
+    text-align:left; font-family:var(--mono); font-size:11px; text-transform:uppercase;
+    letter-spacing:0.06em; color:var(--muted); background:var(--paper-2);
+    padding:12px 18px; border-bottom:1px solid var(--line);
+  }
+  table.agenda-table td{
+    padding:16px 18px; border-bottom:1px solid var(--line); vertical-align:top;
+  }
+  table.agenda-table tr:last-child td{border-bottom:none;}
+  table.agenda-table tr.break td{background:var(--paper-2); color:var(--muted); font-style:italic;}
+  .agenda-time{font-family:var(--mono); font-weight:600; color:var(--accent-dark); white-space:nowrap;}
+  .agenda-desc a{color:var(--ink); text-decoration:underline; text-decoration-color:var(--line);}
+  .agenda-desc a:hover{text-decoration-color:var(--accent);}
+  .kind{
+    display:inline-block; font-family:var(--mono); font-size:10.5px; text-transform:uppercase;
+    padding:2px 6px; border-radius:3px; margin-right:8px; vertical-align:middle;
+  }
+  .kind.lecture{background:#E9E4D8; color:#5B5347;}
+  .kind.hands-on{background:#DCEEEC; color:#155855;}
+  .agenda-speaker{color:var(--muted); font-size:13.5px;}
+  .agenda-footnote{margin-top:18px; font-size:13.5px; color:var(--muted);}
+
+  /* faq */
+  .faq{background:var(--paper-2);}
+  .faq-list{display:flex; flex-direction:column; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden;}
+  .faq-item{background:var(--card);}
+  .faq-q{
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:20px 22px; cursor:pointer; font-family:var(--display); font-weight:600; font-size:16.5px;
+    list-style:none;
+  }
+  .faq-q::-webkit-details-marker{display:none;}
+  .faq-q .plus{font-family:var(--mono); color:var(--accent); font-size:18px; flex-shrink:0; transition:transform .15s ease;}
+  details[open] .plus{transform:rotate(45deg);}
+  .faq-a{padding:0 22px 22px; color:var(--muted); font-size:15px; max-width:70ch;}
+  .faq-a a{color:var(--accent-dark); text-decoration:underline;}
+
+  /* resources */
+  .resources{background:var(--paper);}
+  .res-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
+  .res-card{
+    border:1px solid var(--line); border-radius:10px; padding:22px 20px; background:var(--card);
+    text-decoration:none; display:flex; flex-direction:column; gap:12px; min-height:150px;
+  }
+  .res-card:hover{border-color:var(--accent);}
+  .res-icon{
+    width:34px; height:34px; border-radius:7px; background:var(--paper-2);
+    display:flex; align-items:center; justify-content:center; color:var(--accent-2); font-family:var(--mono); font-size:15px; font-weight:600;
+  }
+  .res-card h4{color:var(--ink); font-size:15.5px;}
+  .res-card p{font-size:12.5px; color:var(--muted); font-family:var(--mono);}
+
+  .more-links{margin-top:36px; display:flex; gap:32px; flex-wrap:wrap;}
+  .more-links a{font-size:14.5px; text-decoration:underline; text-decoration-color:var(--line); color:var(--ink);}
+  .more-links a:hover{text-decoration-color:var(--accent);}
+
+  /* footer */
+  footer.site{
+    background:var(--ink-bg); color:var(--muted-light); padding:44px 0 32px;
+    border-top:1px solid var(--line-dark);
+  }
+  .footer-row{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;}
+  .footer-row a{color:#EDEAE1; text-decoration:none;}
+  .footer-row a:hover{color:var(--accent-2-light);}
+  .footer-links{display:flex; gap:22px; font-family:var(--mono); font-size:12.5px;}
+  .footer-note{margin-top:24px; font-size:12.5px; color:#5B6470; font-family:var(--mono);}
+
+  /* responsive */
+  @media (max-width:920px){
+    .hero-grid{grid-template-columns:1fr; gap:36px;}
+    .statstrip .wrap{grid-template-columns:repeat(2,1fr);}
+    .stat:nth-child(2){border-right:none;}
+    .overview-body{grid-template-columns:1fr;}
+    .track-list{grid-template-columns:1fr;}
+    .res-grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:720px){
+    .navlinks{
+      position:absolute; top:64px; left:0; right:0; background:#11161D;
+      flex-direction:column; align-items:flex-start; padding:18px 28px 24px; gap:16px;
+      border-bottom:1px solid var(--line-dark); display:none;
+    }
+    .navlinks.open{display:flex;}
+    .navtoggle{display:block;}
+    table.agenda-table{font-size:13px;}
+    .agenda-desc, .agenda-speaker{display:block;}
+  }
+  @media (max-width:560px){
+    .res-grid{grid-template-columns:1fr;}
+    table.agenda-table thead{display:none;}
+    table.agenda-table, table.agenda-table tbody, table.agenda-table tr, table.agenda-table td{display:block; width:100%;}
+    table.agenda-table td{border-bottom:none; padding:4px 18px;}
+    table.agenda-table tr{padding:14px 0; border-bottom:1px solid var(--line);}
+    table.agenda-table tr.break{padding:10px 0;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <nav class="wrap">
+    <a href="#top" class="brand"><span class="hi">tapis</span><span class="dim">://</span>pearc26</a>
+    <button class="navtoggle" id="navtoggle" aria-label="Toggle navigation">☰</button>
+    <div class="navlinks" id="navlinks">
+      <a href="#format">format</a>
+      <a href="#agenda">agenda</a>
+      <a href="#faq">faq</a>
+      <a href="#resources">resources</a>
+      <a class="btn btn-outline-dark" href="https://github.com/tapis-project/tutorials" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn btn-accent" href="https://docs.google.com/presentation/d/1fAVcmHwJi5wq4cHvSWFYw778mBJxm9YYMm9fwPTv1MM/edit?slide=id.p1#slide=id.p1" target="_blank" rel="noopener">View slides</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero" style="padding-bottom:0;">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">PEARC 2026 · Tutorial Track</span>
+          <h1>AI/ML, HPC, and the <em>Tapis</em> API platform</h1>
+          <p class="lede">A hands-on tutorial connecting national cyberinfrastructure, AI inference at scale, and computer vision workflows — taught through Tapis, the NSF-funded API platform for HPC.</p>
+          <div class="hero-ctas">
+            <a class="btn btn-accent" href="https://docs.google.com/presentation/d/1fAVcmHwJi5wq4cHvSWFYw778mBJxm9YYMm9fwPTv1MM/edit?slide=id.p1#slide=id.p1" target="_blank" rel="noopener">Open tutorial slides →</a>
+            <a class="btn btn-outline-dark" href="#agenda">View full agenda</a>
+          </div>
+          <div class="hero-orgs">
+            <span>public.tapis.io</span>
+            <span>Funded by the National Science Foundation</span>
+          </div>
+        </div>
+
+        <div class="api-card" aria-hidden="false">
+          <div class="bar">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="bar-label">tutorial-lookup.sh</span>
+          </div>
+          <div class="body">
+            <div class="line"><span class="method">GET</span> <span class="path">/v3/tutorials/pearc26</span></div>
+            <div class="line" style="color:#5B6470;">Host: public.tapis.io</div>
+            <div class="line" style="margin-top:10px;"><span class="status">200 OK</span></div>
+<pre>{
+  "conference": <span class="s">"PEARC 2026"</span>,
+  "date": <span class="s">"2026-07-27"</span>,
+  "time": <span class="s">"1:30–5:00 PM"</span>,
+  "sections": <span class="n">5</span>,
+  "tracks": [
+    <span class="s">"Intro to Tapis"</span>,
+    <span class="s">"AI &amp; FlexServ"</span>,
+    <span class="s">"Vision Models"</span>
+  ],
+  "status": <span class="s">"confirmed"</span>
+}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="statstrip">
+      <div class="wrap">
+        <div class="stat"><div class="k">Date</div><div class="v">July 27, 2026</div></div>
+        <div class="stat"><div class="k">Time</div><div class="v">1:30 – 5:00 PM</div></div>
+        <div class="stat"><div class="k">Format</div><div class="v">Lecture + Hands-on</div></div>
+        <div class="stat"><div class="k">Platform</div><div class="v">TapisUI · public.tapis.io</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OVERVIEW -->
+  <section class="overview">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-tag">Overview</span>
+        <h2>One platform, three tracks into modern AI on HPC</h2>
+      </div>
+      <div class="overview-body">
+        <div>
+          <p><strong>Tapis</strong> is an NSF-funded API platform for managing high-performance computing systems, submitting jobs, and moving data across HPC centers. It gives researchers a consistent way to manage compute resources, run jobs, and manage files — through APIs or through TapisUI, a graphical interface built on top of them.</p>
+          <p>This tutorial walks through Tapis from the ground up: what it is and why it exists alongside the national cyberinfrastructure ecosystem, how to run AI inference at scale with <strong>FlexServ</strong>, and how to apply computer vision models to real scientific data using the ICICLE Data Labeler.</p>
+        </div>
+        <div>
+          <p><strong>FlexServ</strong> is a Tapis service that deploys and serves AI/ML models on HPC or VM resources, providing inference endpoints and a graphical interface for managing the service — the backbone of the afternoon's hands-on inference session on Vista.</p>
+          <div class="funding-note">The compute resources used in this tutorial are provided by funding from the National Science Foundation.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMAT / TRACKS -->
+  <section class="tracks" id="format">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-tag">Format</span>
+        <h2>Three tracks across the afternoon</h2>
+        <p>Each track pairs a short lecture with a hands-on companion session, moving from Tapis fundamentals to applied AI workflows.</p>
+      </div>
+      <div class="track-list">
+
+        <div class="track">
+          <span class="num">01 · Foundations</span>
+          <h3>AI/ML, the national CI ecosystem, and Tapis</h3>
+          <p>Where Tapis fits in the national cyberinfrastructure picture, and your first steps inside TapisUI.</p>
+          <ul>
+            <li><a href="https://tapis-project.github.io/tutorials/Intro_Tapis/01-intro-to-tapis/" target="_blank" rel="noopener"><span class="tag lec">Lecture</span> AI, CI and Tapis</a></li>
+            <li><a href="https://tapis-project.github.io/tutorials/Intro_Tapis/02-initial-tapis-ui/" target="_blank" rel="noopener"><span class="tag">Hands-on</span> Initial steps with TapisUI</a></li>
+          </ul>
+        </div>
+
+        <div class="track">
+          <span class="num">02 · Inference</span>
+          <h3>AI models and FlexServ</h3>
+          <p>Modern AI workflow gaps in scientific infrastructure, and how FlexServ closes them — then run inference yourself on Vista.</p>
+          <ul>
+            <li><a href="https://tapis-project.github.io/tutorials/Tapis_FlexServ/01-lecture/" target="_blank" rel="noopener"><span class="tag lec">Lecture</span> Modern AI, workflow gaps, Tapis solutions</a></li>
+            <li><a href="https://tapis-project.github.io/tutorials/Tapis_FlexServ/01b-running-flexserv/" target="_blank" rel="noopener"><span class="tag">Hands-on</span> Running AI inference on Vista</a></li>
+          </ul>
+        </div>
+
+        <div class="track">
+          <span class="num">03 · Vision</span>
+          <h3>Vision models &amp; Jupyter notebooks</h3>
+          <p>Computer vision in scientific applications, followed by a hands-on pass through the ICICLE Data Labeler service.</p>
+          <ul>
+            <li><a href="https://tapis-project.github.io/tutorials/Vision_Models/01-intro-vision-models/" target="_blank" rel="noopener"><span class="tag lec">Lecture</span> Vision models in science</a></li>
+            <li><a href="https://tapis-project.github.io/tutorials/Vision_Models/03-data-labeler/" target="_blank" rel="noopener"><span class="tag">Hands-on</span> Data Labeler service</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- AGENDA -->
+  <section class="agenda" id="agenda">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-tag">Schedule</span>
+        <h2>Monday, July 27, 2026 — 1:30 to 5:00 PM</h2>
+        <p>Full tutorial schedule with speakers. Session titles link to the corresponding materials.</p>
+      </div>
+
+      <div class="agenda-table-wrap">
+        <table class="agenda-table">
+          <thead>
+            <tr><th>Time</th><th>Session</th><th>Speaker</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="agenda-time">1:30 – 2:00 PM</td>
+              <td class="agenda-desc"><span class="kind lecture">Lecture</span>Section 1: AI/ML, the national cyberinfrastructure ecosystem, and Tapis — <a href="https://tapis-project.github.io/tutorials/Intro_Tapis/01-intro-to-tapis/" target="_blank" rel="noopener">materials</a></td>
+              <td class="agenda-speaker">Joe Stubbs</td>
+            </tr>
+            <tr>
+              <td class="agenda-time">2:00 – 2:30 PM</td>
+              <td class="agenda-desc"><span class="kind lecture">Lecture</span>Section 2: Modern AI, scientific workflow and infrastructure gaps, Tapis solutions — <a href="https://tapis-project.github.io/tutorials/Tapis_FlexServ/01-lecture/" target="_blank" rel="noopener">materials</a></td>
+              <td class="agenda-speaker">Wei Zhang</td>
+            </tr>
+            <tr>
+              <td class="agenda-time">2:30 – 3:30 PM</td>
+              <td class="agenda-desc"><span class="kind hands-on">Hands-on</span>Section 3: Running AI inference on Vista via Tapis and FlexServ — <a href="https://tapis-project.github.io/tutorials/Tapis_FlexServ/01b-running-flexserv/" target="_blank" rel="noopener">materials</a></td>
+              <td class="agenda-speaker">Wei Zhang</td>
+            </tr>
+            <tr class="break">
+              <td class="agenda-time">3:30 – 4:00 PM</td>
+              <td colspan="2">Coffee break</td>
+            </tr>
+            <tr>
+              <td class="agenda-time">4:00 – 4:30 PM</td>
+              <td class="agenda-desc"><span class="kind lecture">Lecture</span>Section 4: Computer vision models in scientific applications — <a href="https://tapis-project.github.io/tutorials/Vision_Models/01-intro-vision-models/" target="_blank" rel="noopener">materials</a></td>
+              <td class="agenda-speaker">Swathi Vallabhajosyula</td>
+            </tr>
+            <tr>
+              <td class="agenda-time">4:30 – 5:00 PM</td>
+              <td class="agenda-desc"><span class="kind hands-on">Hands-on</span>Section 5: ICICLE Data Labeler — <a href="https://tapis-project.github.io/tutorials/Vision_Models/03-data-labeler/" target="_blank" rel="noopener">materials</a></td>
+              <td class="agenda-speaker">Hari Subramoni &amp; Brijesh Brunda</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="agenda-footnote">The compute resources used in this tutorial are provided by funding from the National Science Foundation.</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq" id="faq">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-tag">FAQ</span>
+        <h2>Tapis, frequently asked</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <details>
+            <summary class="faq-q">What is Tapis?<span class="plus">+</span></summary>
+            <div class="faq-a">Tapis is an NSF-funded API platform for managing high-performance computing systems, running jobs, and managing data across HPC centers. It lets users manage compute resources, submit jobs, and manage files through APIs or through TapisUI.</div>
+          </details>
+        </div>
+        <div class="faq-item">
+          <details>
+            <summary class="faq-q">What is FlexServ?<span class="plus">+</span></summary>
+            <div class="faq-a">FlexServ is a Tapis service that allows you to deploy and serve AI/ML models on HPC or VM resources. It provides inference endpoints along with a graphical interface for managing the service.</div>
+          </details>
+        </div>
+        <div class="faq-item">
+          <details>
+            <summary class="faq-q">Where can I ask questions after the tutorial?<span class="plus">+</span></summary>
+            <div class="faq-a">
+              During the tutorial, raise your hand and a TACCster will come help you.<br><br>
+              After the tutorial, open a ticket at <a href="https://portal.tacc.utexas.edu/tacc-consulting" target="_blank" rel="noopener">TACC Consulting</a>.<br><br>
+              For bugs or feature requests, open an issue on <a href="https://github.com/tapis-project" target="_blank" rel="noopener">GitHub</a>.
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESOURCES -->
+  <section class="resources" id="resources">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-tag">Resources</span>
+        <h2>Links &amp; documentation</h2>
+        <p>Everything you need to keep exploring Tapis after the tutorial ends.</p>
+      </div>
+      <div class="res-grid">
+        <a class="res-card" href="https://public.tapis.io" target="_blank" rel="noopener">
+          <span class="res-icon">UI</span>
+          <h4>TapisUI — public tenant</h4>
+          <p>public.tapis.io</p>
+        </a>
+        <a class="res-card" href="https://tapis-project.github.io/live-docs" target="_blank" rel="noopener">
+          <span class="res-icon">{ }</span>
+          <h4>Live OpenAPI docs</h4>
+          <p>All Tapis service specs</p>
+        </a>
+        <a class="res-card" href="https://tapis.readthedocs.io/en/latest" target="_blank" rel="noopener">
+          <span class="res-icon">▤</span>
+          <h4>Full documentation</h4>
+          <p>Guides for using Tapis</p>
+        </a>
+        <a class="res-card" href="https://tapis.readthedocs.io/en/latest/technical/tapisui.html" target="_blank" rel="noopener">
+          <span class="res-icon">▢</span>
+          <h4>TapisUI docs</h4>
+          <p>Interface-specific reference</p>
+        </a>
+      </div>
+
+      <div class="more-links">
+        <a href="https://tapis.readthedocs.io/en/latest/technical/systems.html" target="_blank" rel="noopener">Tapis Systems →</a>
+        <a href="https://tapis.readthedocs.io/en/latest/technical/apps.html" target="_blank" rel="noopener">Tapis Apps →</a>
+        <a href="https://tapis.readthedocs.io/en/latest/technical/jobs.html" target="_blank" rel="noopener">Tapis Jobs →</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="footer-row">
+      <a href="#top" class="mono">tapis://pearc26</a>
+      <div class="footer-links">
+        <a href="https://github.com/tapis-project/tutorials" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://public.tapis.io" target="_blank" rel="noopener">public.tapis.io</a>
+        <a href="https://tapis.readthedocs.io/en/latest" target="_blank" rel="noopener">Docs</a>
+      </div>
+    </div>
+    <div class="footer-note">PEARC26 Tapis Tutorial is maintained by tapis-project.</div>
+  </div>
+</footer>
+
+<script>
+  const navtoggle = document.getElementById('navtoggle');
+  const navlinks = document.getElementById('navlinks');
+  navtoggle.addEventListener('click', () => navlinks.classList.toggle('open'));
+  navlinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navlinks.classList.remove('open')));
+</script>
+
+</body>
+</html>
